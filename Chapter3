@@ -1,0 +1,89 @@
+#include <stdlib.h>
+#include <string.h>
+#include "Head.h"
+
+/* 设定的是优先级越高
+   其数字越低
+   * /  优先级最高 设数字为 1
+   + -  数字为 2
+   (    数字为 3
+   )    数字为 4
+*/
+
+/* 因为考虑到 () 这个特殊情况 */
+
+int Priority(char ch)
+{
+    if (ch == '(')
+        return 3;
+    if (ch == ')')
+        return 4;
+    if (ch == '*' || ch == '/')
+        return 1;
+    if (ch == '+' || ch == '-')
+        return 2;
+}
+
+void PostfixExpress(Stack S)
+{
+    S = MakeStack(S);
+    char num[20]; // 存数字
+    char express[30]; // 表达式;
+
+    gets(express);
+    int j = 0;
+    for(int i = 0; express[i]; i++)
+    {
+        if (express[i] == ' ')
+        {
+            num[j++] = ' ';
+            continue;
+        }
+
+        if (express[i] >= 48 && express[i] <= 57)
+        {
+            num[j++] = express[i];
+            continue;
+        }
+           // 按正常情况 —— 不是数字，就是运算符
+        int prior = Priority(express[i]);
+        if (IsEmpty(S))
+        {
+            Push(S, express[i]);  //只要是空，就进栈
+            continue;
+        }
+
+        if (prior == 3)
+            Push(S, express[i]);  //  (  符号进栈
+             else if (prior == 4)
+             {
+                while (Priority(Top(S)) != 3)
+                {
+                    num[j++] = Top(S);
+                    Pop(S);
+                }
+                Pop(S);   //   )  符号出栈
+             }
+                else if (prior <= Priority(Top(S)))
+                    Push(S, express[i]);
+                    else
+                    {
+                        while (!IsEmpty(S))
+                        {
+                            num[j++] = Top(S);
+                            Pop(S);
+                            if (Priority(Top(S)) > prior)
+                                break;
+                        }
+                        Push(S, express[i]);
+                    }
+    }
+
+    while (!IsEmpty(S))
+    {
+        num[j++] = Top(S);
+        Pop(S);
+    }
+    num[j] = '\0';
+    puts(num);
+}
