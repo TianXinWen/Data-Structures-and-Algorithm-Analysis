@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include "Head.h"
+
+/*typedef int ElementType;
+struct Node {
+    ElementType Element;
+    struct Node *next;
+};
+
+typedef struct Node *PtrToNode;
+typedef PtrToNode Stack;
+
+Stack MakeStack(Stack S);
+void Push(Stack S, ElementType Str);
+void Pop(Stack S);
+ElementType Top(Stack S);
+int IsEmpty(Stack S);
+*/
+int JudgeOperator(char c)
+{
+    if (c == '+' || c == '-' || c == '*' || c == '/')
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+// Watch; PostfExp are char *
+int Count(char c, int b, int a)
+{
+    if (c == '+')
+        return a + b;
+    if (c == '-')
+        return a - b;
+    if (c == '*')
+        return a * b;
+    if (c == '/')
+        return a / b;
+
+    return 0;
+}
+
+void CountPostfixExp(char *PostfExp)
+{
+    Stack S;
+    S = (Stack)MakeStack(S);
+
+    for (int i = 0; PostfExp[i]; i++)
+    {
+        if (PostfExp[i] == ' ')
+            continue;
+
+        if (!JudgeOperator(PostfExp[i]))
+        {
+            Push(S, PostfExp[i]-48);
+        }
+        else
+        {
+            int b = Top(S);
+            Pop(S);
+            int a = Top(S);
+            Pop(S);
+            int c = Count(PostfExp[i], b, a);
+            Push(S, c);
+        }
+    }
+
+    printf("%d\n", Top(S));
+}
