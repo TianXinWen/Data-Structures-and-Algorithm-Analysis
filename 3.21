@@ -2,6 +2,15 @@
 #include <string.h>
 #include "Head.h"
 
+/* typedef char ElementType;
+struct Node {
+    ElementType Element;
+    struct Node *next;
+};
+
+typedef struct Node *PtrToNode;
+typedef PtrToNode Stack;*/
+
 int Priority(char ch)
 {
     if (ch == '(')
